@@ -2,6 +2,7 @@ import pygame
 import sys
 
 class Player(pygame.sprite.Sprite):
+    
     def __init__(self, pos_x, pos_y):
         super().__init__()
         self.image = pygame.Surface([20,20])
