@@ -5,26 +5,18 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
 
-        self.sprites = []
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_0.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_1.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_2.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_3.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_4.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_5.png'))
-        self.sprites.append(pygame.image.load('src/enemy/attack/enemy_attack_6.png'))
-        self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+        self.sprites = [pygame.image.load(f'src/enemy/attack/enemy_attack_{i}.png') for i in range(7)]
+        self.current_sprite = 0.0
+        self.animation_speed = 0.2
+        self.image = self.sprites[int(self.current_sprite)]
 
         self.rect = self.image.get_rect()
-        # self.rect.x = pos_x
-        # self.rect.y = pos_y
         self.rect.topleft = (pos_x, pos_y)
         self.is_animating = False
 
     def update(self):
         if self.is_animating:
-            self.current_sprite += 0.2
+            self.current_sprite += self.animation_speed
 
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
