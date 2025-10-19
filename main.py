@@ -24,13 +24,13 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         if self.is_animating:
-            self.current_sprite += 1
+            self.current_sprite += 0.2
 
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
                 self.is_animating = False
 
-            self.image = self.sprites[self.current_sprite]
+            self.image = self.sprites[int(self.current_sprite)]
 
     def animate(self):
         self.is_animating = True
