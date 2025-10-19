@@ -20,14 +20,20 @@ class Player(pygame.sprite.Sprite):
         # self.rect.x = pos_x
         # self.rect.y = pos_y
         self.rect.topleft = (pos_x, pos_y)
+        self.is_animating = False
 
     def update(self):
-        self.current_sprite += 1
+        if self.is_animating:
+            self.current_sprite += 1
 
-        if self.current_sprite >= len(self.sprites):
-            self.current_sprite = 0
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+                self.is_animating = False
 
-        self.image = self.sprites[self.current_sprite]
+            self.image = self.sprites[self.current_sprite]
+
+    def animate(self):
+        self.is_animating = True
 
 
 pygame.init()
@@ -49,6 +55,8 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            player.animate()
 
     screen.fill((0,0,0))
     moving_sprites.draw(screen)
