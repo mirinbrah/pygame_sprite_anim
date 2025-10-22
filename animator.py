@@ -1,17 +1,36 @@
-class Animator:
-    def __init__(self, sprites, animation_speed=0.2):
-        self.sprites = sprites
-        self.animation_speed = animation_speed
-        self.current_sprite_index = 0.0
-        self.image = self.sprites[0]
+import pygame
 
-    def update(self):
-        if not self.sprites:
+
+class Animator:
+    def __init__(self, animations, initial_state='idle', animation_speed=0.2):
+        self.animations = animations
+        self.animation_speed = animation_speed
+        self.current_animation_name = initial_state
+        self.current_sprite_index = 0.0
+        self.image = self.animations[self.current_animation_name][0]
+        self.just_finished = False
+
+    def set_animation(self, name):
+        if self.current_animation_name == name:
             return
 
-        self.current_sprite_index += self.animation_speed
+        if name in self.animations:
+            self.current_animation_name = name
+            self.current_sprite_index = 0.0
+        else:
+            print(f"Внимание: Анимация '{name}' не найдена!")
 
-        if self.current_sprite_index >= len(self.sprites):
-            self.current_sprite_index = 0
+    def is_animation_finished(self):
+        return self.just_finished
 
-        self.image = self.sprites[int(self.current_sprite_index)]
+    def update(self):
+        self.just_finished = False
+        current_frames = self.animations[self.current_animation_name]
+
+        if len(current_frames) > 1:
+            self.current_sprite_index += self.animation_speed
+            if self.current_sprite_index >= len(current_frames):
+                self.current_sprite_index = 0
+                self.just_finished = True
+
+            self.image = current_frames[int(self.current_sprite_index)]

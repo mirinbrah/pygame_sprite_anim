@@ -1,5 +1,4 @@
 import pygame
-
 from settings import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
@@ -10,6 +9,7 @@ class PhysicsObject(pygame.sprite.Sprite):
         self.rect = None
         self.velocity = pygame.math.Vector2(0, 0)
         self.gravity = GRAVITY
+        self.is_on_ground = False
 
     def apply_gravity(self):
         self.velocity.y += self.gravity
@@ -19,13 +19,15 @@ class PhysicsObject(pygame.sprite.Sprite):
             raise NotImplementedError("Дочерний класс должен определить self.rect")
 
         self.apply_gravity()
-
         self.rect.x += self.velocity.x
+
+        self.is_on_ground = False
         self.rect.y += self.velocity.y
 
         if self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
             self.velocity.y = 0
+            self.is_on_ground = True
 
         if self.rect.left < 0:
             self.rect.left = 0
