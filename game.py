@@ -1,7 +1,7 @@
 import pygame
 import sys
 from settings import *
-from player import Player
+from player import Player  # Убедитесь, что импортируете исправленный Player
 from animator import Animator
 
 
@@ -27,20 +27,13 @@ class Game:
             for i in range(frame_count):
                 path = f'src/player/{anim_name}/player_{anim_name}_{i}.png'
                 image = pygame.image.load(path).convert_alpha()
-
-                new_size = (
-                    int(image.get_width() * PLAYER_SCALE),
-                    int(image.get_height() * PLAYER_SCALE)
-                )
-                scaled_image = pygame.transform.scale(image, new_size)
-                frames.append(scaled_image)
+                frames.append(image)
 
             animations[anim_name] = frames
 
         player_animator = Animator(animations, initial_state='idle', animation_speed=0.2)
         start_pos = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
-        self.player = Player(start_pos, player_animator, self.all_sprites)
+        self.player = Player(start_pos, player_animator, PLAYER_SCALE, self.all_sprites)
 
     def handle_events(self):
         for event in pygame.event.get():

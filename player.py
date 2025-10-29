@@ -2,15 +2,18 @@ import pygame
 from physics import PhysicsObject
 from settings import PLAYER_SPEED, JUMP_STRENGTH
 
-
 class Player(PhysicsObject):
-    def __init__(self, pos, animator, *groups):
+    def __init__(self, pos, animator, scale=1, *groups):
         super().__init__(*groups)
         self.animator = animator
-        self.image = self.animator.image
-        self.rect = self.image.get_rect(center=pos)
+        self.scale = scale
         self.direction = 1  # 1 - вправо, -1 - влево
         self.is_attacking = False
+
+        self.image = pygame.Surface((0, 0))
+        self.rect = self.image.get_rect(center=pos)
+
+        self._update_graphics()
 
     def get_input(self):
         if self.is_attacking:
@@ -43,12 +46,29 @@ class Player(PhysicsObject):
             return
 
         if not self.is_on_ground:
-            # Need jump animation
-            self.animator.set_animation('idle')
+            if 'jump' in self.animator.animations:
+                self.animator.set_animation('jump')
+            else:
+                self.animator.set_animation('idle') # Запасной вариант
         elif self.velocity.x != 0:
             self.animator.set_animation('run')
         else:
             self.animator.set_animation('idle')
+
+    def _update_graphics(self):
+        original_image = self.animator.image
+
+        new_size = (int(original_image.get_width() * self.scale),
+                    int(original_image.get_height() * self.scale))
+        scaled_image = pygame.transform.scale(original_image, new_size)
+
+        if self.direction == -1:
+            self.image = pygame.transform.flip(scaled_image, True, False)
+        else:
+            self.image = scaled_image
+
+        old_center = self.rect.center
+        self.rect = self.image.get_rect(center=old_center)
 
     def update(self):
         self.get_input()
@@ -59,6 +79,4 @@ class Player(PhysicsObject):
         if self.is_attacking and self.animator.is_animation_finished():
             self.is_attacking = False
 
-        self.image = self.animator.image
-        if self.direction == -1:
-            self.image = pygame.transform.flip(self.image, True, False)
+        self._update_graphics()
