@@ -5,7 +5,7 @@ from settings import GRAVITY, SCREEN_HEIGHT, SCREEN_WIDTH
 class PhysicsObject(pygame.sprite.Sprite):
     def __init__(self, *groups):
         super().__init__(*groups)
-        self.image = None
+        # self.image = None
         self.rect = None
         self.velocity = pygame.math.Vector2(0, 0)
         self.gravity = GRAVITY
