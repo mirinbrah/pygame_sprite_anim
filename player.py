@@ -1,19 +1,46 @@
 import pygame
 from physics import PhysicsObject
-from settings import PLAYER_SPEED, JUMP_STRENGTH
+from settings import PLAYER_SPEED, JUMP_STRENGTH, PLAYER_SCALE
+from animator import Animator
+
 
 class Player(PhysicsObject):
-    def __init__(self, pos, animator, scale=1, *groups):
+    def __init__(self, pos, scale=PLAYER_SCALE , *groups):
         super().__init__(*groups)
-        self.animator = animator
+
+        self.animations = self._load_animations()
+        self.animator = Animator(self.animations, initial_state='idle', animation_speed=0.2)
         self.scale = scale
         self.direction = 1  # 1 - вправо, -1 - влево
         self.is_attacking = False
-
         self.image = pygame.Surface((0, 0))
         self.rect = self.image.get_rect(center=pos)
-
         self._update_graphics()
+
+    @staticmethod
+    def _load_animations():
+        animations = {}
+        animation_data = {
+            'idle': 10,
+            'run': 16,
+            'attack': 7,
+        }
+
+        base_path = 'src/player/'
+
+        for anim_name, frame_count in animation_data.items():
+            frames = []
+            for i in range(frame_count):
+                path = f'{base_path}{anim_name}/player_{anim_name}_{i}.png'
+                try:
+                    image = pygame.image.load(path).convert_alpha()
+                    frames.append(image)
+                except pygame.error as e:
+                    print(f"Ошибка загрузки изображения: {path}")
+                    print(e)
+            animations[anim_name] = frames
+
+        return animations
 
     def get_input(self):
         if self.is_attacking:
@@ -49,7 +76,7 @@ class Player(PhysicsObject):
             if 'jump' in self.animator.animations:
                 self.animator.set_animation('jump')
             else:
-                self.animator.set_animation('idle') # Запасной вариант
+                self.animator.set_animation('idle')  # Запасной вариант
         elif self.velocity.x != 0:
             self.animator.set_animation('run')
         else:

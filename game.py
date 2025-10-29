@@ -1,9 +1,7 @@
 import pygame
 import sys
 from settings import *
-from player import Player  # Убедитесь, что импортируете исправленный Player
-from animator import Animator
-
+from player import Player
 
 class Game:
     def __init__(self):
@@ -14,26 +12,8 @@ class Game:
         self.is_running = True
 
         self.all_sprites = pygame.sprite.Group()
-
-        animations = {}
-        animation_data = {
-            'idle': 10,
-            'run': 16,
-            'attack': 7,
-        }
-
-        for anim_name, frame_count in animation_data.items():
-            frames = []
-            for i in range(frame_count):
-                path = f'src/player/{anim_name}/player_{anim_name}_{i}.png'
-                image = pygame.image.load(path).convert_alpha()
-                frames.append(image)
-
-            animations[anim_name] = frames
-
-        player_animator = Animator(animations, initial_state='idle', animation_speed=0.2)
         start_pos = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-        self.player = Player(start_pos, player_animator, PLAYER_SCALE, self.all_sprites)
+        self.player = Player(start_pos, PLAYER_SCALE, self.all_sprites)
 
     def handle_events(self):
         for event in pygame.event.get():
