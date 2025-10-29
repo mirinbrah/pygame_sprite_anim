@@ -5,7 +5,7 @@ from animator import Animator
 
 
 class Player(PhysicsObject):
-    def __init__(self, pos, scale=PLAYER_SCALE , *groups):
+    def __init__(self, pos, scale , *groups):
         super().__init__(*groups)
 
         self.animations = self._load_animations()
